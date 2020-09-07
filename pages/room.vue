@@ -13,7 +13,7 @@
   </v-layout>
 </template>
 
-<script>
+<script lang="ts">
 import firebase from '@/plugins/firebaseInit'
 import MasterSVG from '@/components/Master'
 import { Player } from '@/types'
@@ -30,7 +30,7 @@ export default {
   components: {
     MasterSVG
   },
-  data() {
+  data(): { [key: string]: number } {
     return {
       playableCount: 0
     }
@@ -38,7 +38,9 @@ export default {
   created() {
     this.$store.dispatch('fetchRoom')
     aRoomRef.onSnapshot((doc) => {
+      if (doc.exists) {
       this.playableCount = doc.data().playableCount
+      }
     })
   },
   methods: {
@@ -48,8 +50,8 @@ export default {
     },
     selectInsider: async function() {
       const players = this.$store.getters.getPlayers
-      const playersUid = []
-      players.forEach((player) => {
+      const playersUid: Array<string> = []
+      players.forEach((player: Player) => {
         if (!player.isGameMaster) {
           playersUid.push(player.uid)
         }

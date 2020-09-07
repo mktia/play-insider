@@ -19,13 +19,13 @@
   </v-layout>
 </template>
 
-<script>
+<script lang="ts">
 export default {
-  pageTransition: {
+  transition: {
     name: 'page',
-    mode: ''
+    mode: 'out-in'
   },
-  data() {
+  data(): { [key: string]: boolean | string } {
     return {
       isGameMaster: false,
       isLoading: false,
