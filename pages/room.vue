@@ -16,7 +16,7 @@
   </v-layout>
 </template>
 
-<script lang="ts">
+<script>
 import firebase from '@/plugins/firebaseInit'
 import MasterSVG from '@/components/Master'
 import SyncSVG from '@/components/Sync'
@@ -36,7 +36,7 @@ export default {
     MasterSVG,
     SyncSVG
   },
-  data(): { [key: string]: number } {
+  data() {
     return {
       playableCount: 0
     }
@@ -56,8 +56,8 @@ export default {
     },
     selectInsider: async function() {
       const players = this.$store.getters.getPlayers
-      const playersUid: Array<string> = []
-      players.forEach((player: Player) => {
+      const playersUid= []
+      players.forEach((player) => {
         if (!player.isGameMaster) {
           playersUid.push(player.uid)
         }
