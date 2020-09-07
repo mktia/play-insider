@@ -79,6 +79,7 @@ export default {
     extend(config, ctx) {}
   },
   server: {
-    port: 5000
+    port: 5000,
+    host: '0.0.0.0'
   }
 }
