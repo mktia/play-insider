@@ -8,6 +8,9 @@
       <div class="d-flex justify-center mt-5 pt-5">
         <v-btn v-if="$store.getters.getGameMaster" @click="selectInsider">auto select insider</v-btn>
         <v-btn v-else :disabled="playableCount===0" @click="play">play</v-btn>
+        <v-btn text @click="sync">
+          <SyncSVG :width="24" color="#666" />
+        </v-btn>
       </div>
     </v-flex>
   </v-layout>
@@ -16,8 +19,10 @@
 <script lang="ts">
 import firebase from '@/plugins/firebaseInit'
 import MasterSVG from '@/components/Master'
+import SyncSVG from '@/components/Sync'
 import { Player } from '@/types'
 import words from '@/words'
+import SyncVue from '~/components/Sync.vue'
 
 const db = firebase.firestore()
 const aRoomRef = db.collection('room').doc('roomAutoID')
@@ -28,7 +33,8 @@ const uidsRef = db
 
 export default {
   components: {
-    MasterSVG
+    MasterSVG,
+    SyncSVG
   },
   data(): { [key: string]: number } {
     return {
@@ -39,7 +45,7 @@ export default {
     this.$store.dispatch('fetchRoom')
     aRoomRef.onSnapshot((doc) => {
       if (doc.exists) {
-      this.playableCount = doc.data().playableCount
+        this.playableCount = doc.data().playableCount
       }
     })
   },
@@ -65,6 +71,9 @@ export default {
       await aRoomRef.update({ word: words[randomNum] })
 
       this.$router.push({ path: '/play' })
+    },
+    sync: function() {
+      this.$store.dispatch('fetchRoom')
     }
   }
 }
