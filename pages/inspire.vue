@@ -10,6 +10,35 @@
           </small>
         </footer>
       </blockquote>
+      <div>
+        <v-btn @click="resetRoom">reset room</v-btn>
+      </div>
     </v-flex>
   </v-layout>
 </template>
+
+<script lang="ts">
+import firebase from '@/plugins/firebaseInit'
+
+const db = firebase.firestore()
+const uidsRef = db
+  .collection('room')
+  .doc('roomAutoID')
+  .collection('uids')
+
+export default {
+  methods: {
+    resetRoom: async function() {
+      const uids: Array<string> = []
+      await uidsRef.get().then((snapShot) => {
+        snapShot.forEach((doc) => {
+          uids.push(doc.data().uid)
+        })
+      })
+      uids.forEach(async (uid) => {
+        await uidsRef.doc(uid).delete()
+      })
+    }
+  }
+}
+</script>
