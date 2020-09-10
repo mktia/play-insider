@@ -44,7 +44,7 @@ export default {
         roomId: this.roomId,
         userName: this.userName
       })
-      this.$router.push({ path: '/room' })
+      this.$router.push({ name: 'room', params: { roomId: this.roomId } })
     },
     switchGameMaster: function() {
       this.isGameMaster = !this.isGameMaster

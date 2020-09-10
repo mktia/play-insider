@@ -47,7 +47,9 @@ export default {
     }
   },
   created() {
-    const roomId = this.$store.getters.getRoomId
+    const roomIdFromStore = this.$store.getters.getRoomId
+    const roomIdFromParams = this.$route.params.roomId
+    const roomId = roomIdFromStore || roomIdFromParams
     const aRoomRef = roomRef.doc(roomId)
     const uidsRef = aRoomRef.collection('uids')
 
@@ -94,7 +96,10 @@ export default {
       this.$router.push({ path: '/play' })
     },
     sync: function() {
-      this.$store.dispatch('fetchRoom', this.$store.getters.getRoomId)
+      const roomIdFromStore = this.$store.getters.getRoomId
+      const roomIdFromParams = this.$route.params.roomId
+      const roomId = roomIdFromStore || roomIdFromParams
+      this.$store.dispatch('fetchRoom', roomId)
       aRoomRef.onSnapshot((doc) => {
         if (doc.exists) {
           this.playableCount = doc.data().playableCount
