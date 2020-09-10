@@ -77,6 +77,8 @@ export default {
       isOpen: false,
       isDelete: false,
       isInsider: false,
+      isWorkingStart: false,
+      isWorkingReverse: false,
       timerId: null,
       seconds: 60 * 5,
       word: '',
@@ -102,27 +104,34 @@ export default {
       const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
       aRoomRef.update({ playableCount: 0 })
 
-      this.timerId = setInterval(() => {
-        this.seconds--
-        if (this.seconds === 0) {
-          this.audio.play()
-          clearInterval(this.timerId)
-        }
-      }, 1000)
+      if (this.isWorkingStart === false) {
+        this.timerId = setInterval(() => {
+          this.seconds--
+          if (this.seconds === 0) {
+            this.audio.play()
+            clearInterval(this.timerId)
+          }
+        }, 1000)
+      }
+      this.isWorkingStart = true
     },
     stop: function() {
       this.audio.pause()
       clearInterval(this.timerId)
     },
     reverse: function() {
-      this.timerId = setInterval(() => {
-        this.seconds++
-        if (this.seconds >= 300) {
-          this.audio = new Audio(sound)
-          this.audio.play()
-          clearInterval(this.timerId)
-        }
-      }, 1000)
+      if (this.isWorkingReverse === false) {
+        this.timerId = setInterval(() => {
+          this.seconds++
+          if (this.seconds >= 300) {
+            this.audio = new Audio(sound)
+            this.audio.play()
+            clearInterval(this.timerId)
+          }
+        }, 1000)
+      }
+
+      this.isWorkingReverse = true
     },
     deleteRoom: async function() {
       const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
