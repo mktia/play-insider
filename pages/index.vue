@@ -4,6 +4,8 @@
       <div>
         <v-form>
           <v-row>
+            <v-text-field v-model="userName" label="Player's name" />
+          </v-row>
           <v-row>
             <v-text-field v-model="roomId" label="Room ID" />
           </v-row>

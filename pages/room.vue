@@ -3,7 +3,7 @@
     <v-flex xs12 sm8 md6 style="min-width: 240px">
       <v-card v-for="player in $store.getters.getPlayers" :key="player.userName" class="card">
         <MasterSVG v-if="player.isGameMaster" color="#ccc" :width="24" class="svg" />
-        <v-card-text class="text-center my-2 text-h5">{{ player.userName }}</v-card-text>
+        <v-card-text class="text-center my-2 text-h6">{{ player.userName }}</v-card-text>
       </v-card>
       <div class="d-flex justify-center mt-5 pt-5">
         <v-btn v-if="$store.getters.getGameMaster" @click="selectInsider">auto select insider</v-btn>

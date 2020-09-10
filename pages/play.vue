@@ -1,7 +1,7 @@
 <template>
   <v-layout column justify-center align-center>
     <v-flex xs12 sm8 md6>
-      <p class="text-h4 my-5">You're role is ...</p>
+      <p class="text-h5 my-5">Your role is ...</p>
       <v-card
         v-if="$store.getters.getGameMaster"
         elevation="4"
@@ -79,8 +79,8 @@ export default {
     })
 
     aRoomRef.get().then((doc) => {
-        this.word = doc.data().word
-      })
+      this.word = doc.data().word
+    })
   },
   methods: {
     start: function() {
