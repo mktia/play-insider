@@ -40,6 +40,18 @@
           <v-card-text class="text-center blue--text text--lighten-5 text-h6 pa-2">{{ this.word }}</v-card-text>
         </v-card>
       </div>
+      <div v-if="$store.getters.getGameMaster" class="d-flex justify-center mt-3">
+        <v-btn color="red" @click="isDelete=true">delete room</v-btn>
+      </div>
+      <v-dialog v-model="isDelete" width="240">
+        <v-card>
+          <v-card-title>Caution!</v-card-title>
+          <v-card-text class="text-center">Cannot recover deleted room. OK?</v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn class="red" @click="deleteRoom">delete</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -63,6 +75,7 @@ export default {
   data() {
     return {
       isOpen: false,
+      isDelete: false,
       isInsider: false,
       timerId: null,
       seconds: 60 * 5,
@@ -110,6 +123,12 @@ export default {
           clearInterval(this.timerId)
         }
       }, 1000)
+    },
+    deleteRoom: async function() {
+      const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
+      await aRoomRef.delete()
+
+      this.$router.push({ path: '/' })
     }
   }
 }
