@@ -95,6 +95,11 @@ export default {
     },
     sync: function() {
       this.$store.dispatch('fetchRoom', this.$store.getters.getRoomId)
+      aRoomRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          this.playableCount = doc.data().playableCount
+        }
+      })
     }
   }
 }
