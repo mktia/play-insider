@@ -22,15 +22,15 @@
       <div class="d-flex justify-center">
         <v-btn @click="isOpen=true" :disabled="!$store.getters.getGameMaster" class="my-3">timer</v-btn>
       </div>
-      <v-dialog v-model="isOpen" max-width="240">
+      <v-dialog v-model="isOpen" max-width="280">
         <v-card class="blue-grey lighten-5 pa-3">
           <v-card-text
             class="text-center blue-grey--text text--darken--4 text-h3"
           >{{('00'+Math.floor(seconds/60)).slice(-2)}}:{{('00'+seconds%60).slice(-2)}}</v-card-text>
-          <v-card-actions>
-            <v-btn @click="reverse"><</v-btn>
-            <v-btn @click="stop">||</v-btn>
-            <v-btn @click="start">></v-btn>
+          <v-card-actions class="justify-center">
+            <v-btn @click="reverse">reverse</v-btn>
+            <v-btn @click="stop">stop</v-btn>
+            <v-btn @click="start">start</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -49,6 +49,7 @@ import firebase from '@/plugins/firebaseInit'
 import CommonsSVG from '@/components/Commons'
 import InsiderSVG from '@/components/Insider'
 import MasterSVG from '@/components/Master'
+import sound from '@/assets/sounds/alarm.mp3'
 
 const db = firebase.firestore()
 const roomRef = db.collection('room')
@@ -65,7 +66,8 @@ export default {
       isInsider: false,
       timerId: null,
       seconds: 60 * 5,
-      word: ''
+      word: '',
+      audio: new Audio(sound)
     }
   },
   created() {
@@ -89,14 +91,24 @@ export default {
 
       this.timerId = setInterval(() => {
         this.seconds--
+        if (this.seconds === 0) {
+          this.audio.play()
+          clearInterval(this.timerId)
+        }
       }, 1000)
     },
     stop: function() {
+      this.audio.pause()
       clearInterval(this.timerId)
     },
     reverse: function() {
       this.timerId = setInterval(() => {
         this.seconds++
+        if (this.seconds === 5) {
+          this.audio = new Audio(sound)
+          this.audio.play()
+          clearInterval(this.timerId)
+        }
       }, 1000)
     }
   }
