@@ -12,6 +12,14 @@
           <SyncSVG :width="24" color="#666" />
         </v-btn>
       </div>
+      <v-form>
+        <v-text-field
+          v-if="$store.getters.getGameMaster"
+          v-model="customAnswer"
+          placeholder="Custom answer (option)"
+          hint="Game master can only decide an answer"
+        />
+      </v-form>
     </v-flex>
   </v-layout>
 </template>
@@ -34,6 +42,7 @@ export default {
   },
   data() {
     return {
+      customAnswer: '',
       playableCount: 0
     }
   },
@@ -70,7 +79,17 @@ export default {
       await uidsRef.doc(playersUid[randomNum]).update({ isInsider: true })
 
       randomNum = Math.floor(Math.random() * words.length)
-      await aRoomRef.set({ playableCount: playersUid.length, word: words[randomNum] })
+      if (this.customAnswer === '') {
+        await aRoomRef.set({
+          playableCount: playersUid.length,
+          word: words[randomNum]
+        })
+      } else {
+        await aRoomRef.set({
+          playableCount: playersUid.length,
+          word: this.customAnswer
+        })
+      }
 
       this.$router.push({ path: '/play' })
     },
