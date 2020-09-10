@@ -134,8 +134,18 @@ export default {
       this.isWorkingReverse = true
     },
     deleteRoom: async function() {
-      const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
-      await aRoomRef.delete()
+      const uidsRef = roomRef
+        .doc(this.$store.getters.getRoomId)
+        .collection('uids')
+      const uids = []
+      await uidsRef.get().then((snapShot) => {
+        snapShot.forEach((doc) => {
+          uids.push(doc.data().uid)
+        })
+      })
+      uids.forEach(async (uid) => {
+        await uidsRef.doc(uid).delete()
+      })
 
       this.$router.push({ path: '/' })
     }
