@@ -25,11 +25,7 @@ import words from '@/words'
 import SyncVue from '~/components/Sync.vue'
 
 const db = firebase.firestore()
-const aRoomRef = db.collection('room').doc('roomAutoID')
-const uidsRef = db
-  .collection('room')
-  .doc('roomAutoID')
-  .collection('uids')
+const roomRef = db.collection('room')
 
 export default {
   components: {
@@ -42,7 +38,11 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('fetchRoom')
+    const roomId = this.$store.getters.getRoomId
+    const aRoomRef = roomRef.doc(roomId)
+    const uidsRef = aRoomRef.collection('uids')
+
+    this.$store.dispatch('fetchRoom', roomId)
     aRoomRef.onSnapshot((doc) => {
       if (doc.exists) {
         this.playableCount = doc.data().playableCount
@@ -51,12 +51,15 @@ export default {
   },
   methods: {
     play: async function() {
-      aRoomRef.update({})
+      const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
       this.$router.push({ path: '/play' })
     },
     selectInsider: async function() {
+      const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
+      const uidsRef = aRoomRef.collection('uids')
+
       const players = this.$store.getters.getPlayers
-      const playersUid= []
+      const playersUid = []
       players.forEach((player) => {
         if (!player.isGameMaster) {
           playersUid.push(player.uid)
@@ -65,15 +68,14 @@ export default {
 
       let randomNum = Math.floor(Math.random() * playersUid.length)
       await uidsRef.doc(playersUid[randomNum]).update({ isInsider: true })
-      await aRoomRef.update({ playableCount: playersUid.length })
 
       randomNum = Math.floor(Math.random() * words.length)
-      await aRoomRef.update({ word: words[randomNum] })
+      await aRoomRef.set({ playableCount: playersUid.length, word: words[randomNum] })
 
       this.$router.push({ path: '/play' })
     },
     sync: function() {
-      this.$store.dispatch('fetchRoom')
+      this.$store.dispatch('fetchRoom', this.$store.getters.getRoomId)
     }
   }
 }

@@ -52,7 +52,6 @@ import MasterSVG from '@/components/Master'
 
 const db = firebase.firestore()
 const roomRef = db.collection('room')
-const aRoomRef = db.collection('room').doc('roomAutoID')
 
 export default {
   components: {
@@ -70,21 +69,24 @@ export default {
     }
   },
   created() {
+    const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
+    const uidsRef = aRoomRef.collection('uids')
+
     this.$store.getters.getPlayers.forEach((player) => {
       if (player.uid === this.$store.getters.getUserUid) {
         this.isInsider = player.isInsider
       }
     })
 
-    roomRef.get().then((snapShot) => {
-      snapShot.forEach((doc) => {
+    aRoomRef.get().then((doc) => {
         this.word = doc.data().word
       })
-    })
   },
   methods: {
     start: function() {
+      const aRoomRef = roomRef.doc(this.$store.getters.getRoomId)
       aRoomRef.update({ playableCount: 0 })
+
       this.timerId = setInterval(() => {
         this.seconds--
       }, 1000)
