@@ -104,7 +104,7 @@ export default {
     reverse: function() {
       this.timerId = setInterval(() => {
         this.seconds++
-        if (this.seconds === 5) {
+        if (this.seconds >= 300) {
           this.audio = new Audio(sound)
           this.audio.play()
           clearInterval(this.timerId)
